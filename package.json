@@ -7,9 +7,11 @@
     "dev": "concurrently \"cd backend && cargo run\" \"vite\""
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.2",
     "solid-js": "^1.8.7"
   },
   "devDependencies": {
+    "@types/google.maps": "^3.55.1",
     "concurrently": "^8.2.2",
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
