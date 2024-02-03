@@ -2,7 +2,9 @@ import { Loader } from "@googlemaps/js-api-loader";
 import { GoogleMapsInitializeOptions } from "../types";
 import { createResource } from "solid-js";
 
-async function initializeGoogleMaps({ apiKey, mapOptions }: GoogleMapsInitializeOptions): Promise<google.maps.Map> {
+async function initializeGoogleMaps(options: GoogleMapsInitializeOptions): Promise<google.maps.Map> {
+    const { elementIdName, apiKey, mapOptions } = options;
+
     const googleMapsLoader: Loader = new Loader({
         apiKey,
         version: "weekly",
@@ -10,18 +12,17 @@ async function initializeGoogleMaps({ apiKey, mapOptions }: GoogleMapsInitialize
     });
 
     const { Map } = await googleMapsLoader.importLibrary("maps");
-    return new Map(document.getElementById("map") as HTMLElement, mapOptions);
+    return new Map(document.getElementById(elementIdName) as HTMLElement, mapOptions);
 }
 
-interface GoogleMapProps {
-    apiKey: string;
-    mapOptions: google.maps.MapOptions;
+export interface GoogleMapProps {
+    initializerOptions: GoogleMapsInitializeOptions;
 }
 
 function GoogleMap(props: GoogleMapProps) {
-    const googleMap = createResource(() => ({ ...props }), initializeGoogleMaps);
+    const googleMap = createResource(() => ({ ...props.initializerOptions }), initializeGoogleMaps);
 
-    return <div id="map" style={`width: 100vw; height: 100vh;`}></div>;
+    return <div id={props.initializerOptions.elementIdName} style={`width: 100vw; height: 100vh;`}></div>;
 }
 
 export default GoogleMap;
