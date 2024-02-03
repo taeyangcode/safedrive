@@ -31,4 +31,4 @@ dist-ssr
 .DS_Store
 
 # Build files
-backend/target/
+api/target/

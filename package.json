@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"cd backend && cargo run\" \"vite\""
+    "dev": "concurrently \"cd api && cargo run\" \"vite\""
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.2",
