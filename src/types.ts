@@ -3,3 +3,5 @@ export interface GoogleMapsInitializeOptions {
     apiKey: string;
     mapOptions: google.maps.MapOptions;
 }
+
+export type HeatmapPoint = google.maps.LatLng | google.maps.visualization.WeightedLocation;
