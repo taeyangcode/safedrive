@@ -32,3 +32,6 @@ dist-ssr
 
 # Build files
 api/target/
+
+# Data files
+api/*.csv
