@@ -9,8 +9,6 @@ export interface GoogleMapProps {
     elementStyles: string;
 }
 
-let i = 1;
-
 function GoogleMap(props: GoogleMapProps) {
     const [googleMap] = createResource(
         () => ({ ...props.initializerOptions }),
@@ -19,20 +17,8 @@ function GoogleMap(props: GoogleMapProps) {
 
     const [heatmapPoints, { mutate: setHeatmapPoints }] = createResource(
         googleMap,
-        (): HeatmapPoint[] => [new google.maps.LatLng({ lat: 33.815933, lng: -118.304453 })],
+        (): HeatmapPoint[] => [],
     );
-
-    setInterval(() => {
-        console.log("interval ran");
-        setHeatmapPoints(
-            heatmapPoints()!.length >= 10
-                ? []
-                : [
-                      ...heatmapPoints()!,
-                      new google.maps.LatLng({ lat: 33.815933 + i++, lng: -118.304453 }),
-                  ],
-        );
-    }, 2_000);
 
     return (
         <div
