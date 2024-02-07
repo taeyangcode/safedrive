@@ -1,35 +1,32 @@
-import { GoogleMapsInitializeOptions, HeatmapPoint } from "../types";
-import { createResource } from "solid-js";
+import { GoogleMapsInitializeOptions } from "../types";
+import { JSX, createContext, createResource, useContext } from "solid-js";
 import { initializeGoogleMaps } from "./helper";
-import Heatmap from "../Heatmap/Heatmap";
+
+const GoogleMapObject = createContext<google.maps.Map | undefined>(undefined);
+
+export function useGoogleMapObject(): google.maps.Map | undefined {
+    return useContext(GoogleMapObject);
+}
 
 export interface GoogleMapProps {
     initializerOptions: GoogleMapsInitializeOptions;
     elementClasses: string;
     elementStyles: string;
+
+    children?: JSX.Element;
 }
 
 function GoogleMap(props: GoogleMapProps) {
-    const [googleMap] = createResource(
-        () => ({ ...props.initializerOptions }),
-        initializeGoogleMaps,
-    );
+    const { initializerOptions, elementClasses, elementStyles, children } = props;
 
-    const [heatmapPoints, { mutate: setHeatmapPoints }] = createResource(
-        googleMap,
-        (): HeatmapPoint[] => [],
-    );
+    const [googleMap] = createResource(() => ({ ...initializerOptions }), initializeGoogleMaps);
 
     return (
-        <div
-            id={props.initializerOptions.elementIdName}
-            class={props.elementClasses}
-            style={props.elementStyles}
-        >
-            {googleMap.loading && "Loading..."}
-            {googleMap.error && "Error occured!"}
+        <div id={initializerOptions.elementIdName} class={elementClasses} style={elementStyles}>
+            {googleMap.loading && <div> Loading... </div>}
+            {googleMap.error && <div> Error! </div>}
             {googleMap() && (
-                <Heatmap googleMapObject={googleMap()!} heatmapPoints={heatmapPoints} />
+                <GoogleMapObject.Provider value={googleMap()}>{children}</GoogleMapObject.Provider>
             )}
         </div>
     );
