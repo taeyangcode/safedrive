@@ -20,7 +20,12 @@ function App() {
         elementStyles: "",
     };
 
-    const [heatmapPoints, _] = createSignal<HeatmapPoint[]>([]);
+    const [heatmapPoints, _] = createSignal<HeatmapPoint[]>([
+        { lat: 37.77, lng: -122.42 },
+        { lat: 37.77, lng: -122.42 },
+        { lat: 37.77, lng: -122.42 },
+        { lat: 37.77, lng: -122.42 },
+    ]);
 
     return (
         <div class="w-screen h-screen">

@@ -23,7 +23,7 @@ export interface HeatmapProps {
 
 function Heatmap(props: HeatmapProps) {
     const googleMapObject = useGoogleMapObject();
-    const [heatmap, _] = createResource(() => googleMapObject, createHeatmapLayer);
+    const [heatmap] = createResource(() => googleMapObject, createHeatmapLayer);
 
     return (
         <>

@@ -4,4 +4,14 @@ export interface GoogleMapsInitializeOptions {
     mapOptions: google.maps.MapOptions;
 }
 
-export type HeatmapPoint = google.maps.LatLng | google.maps.visualization.WeightedLocation;
+export interface Coordinate {
+    lat: number;
+    lng: number;
+}
+
+export interface WeightedCoordinate {
+    coordinate: Coordinate;
+    weight: number;
+}
+
+export type HeatmapPoint = Coordinate | WeightedCoordinate;
