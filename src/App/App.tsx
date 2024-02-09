@@ -3,36 +3,24 @@ import GoogleMap, { GoogleMapProps } from "../GoogleMap/GoogleMap";
 import Heatmap from "../Heatmap/Heatmap";
 import { HeatmapDataPoint } from "../types";
 
-function App() {
-    const googleMapProperties: GoogleMapProps = {
-        initializerOptions: {
-            elementIdName: "map",
-            apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-            mapOptions: {
-                center: {
-                    lat: 37.77,
-                    lng: -122.42,
-                },
-                zoom: 15,
+const googleMapProperties: GoogleMapProps = {
+    initializerOptions: {
+        elementIdName: "map",
+        apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+        mapOptions: {
+            center: {
+                lat: 37.77,
+                lng: -122.42,
             },
+            zoom: 15,
         },
-        elementClasses: "w-screen h-screen",
-        elementStyles: "",
-    };
+    },
+    elementClasses: "w-screen h-screen",
+    elementStyles: "",
+};
 
-    const [heatmapPoints, setHeatmapPoints] = createSignal<HeatmapDataPoint[]>([
-        new HeatmapDataPoint(37.77, -122.42),
-    ]);
-
-    setInterval(() => {
-        setHeatmapPoints([
-            ...heatmapPoints(),
-            new HeatmapDataPoint(
-                heatmapPoints()[heatmapPoints().length - 1].latitude + 0.05,
-                -122.42,
-            ),
-        ]);
-    }, 2_000);
+function App() {
+    const [heatmapPoints, _] = createSignal<HeatmapDataPoint[]>([]);
 
     return (
         <div class="w-screen h-screen">

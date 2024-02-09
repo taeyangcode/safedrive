@@ -1,4 +1,4 @@
-import { createResource } from "solid-js";
+import { createEffect, createResource } from "solid-js";
 import { HeatmapDataPoint } from "../types";
 import { useGoogleMapObject } from "../GoogleMap/GoogleMap";
 
@@ -25,11 +25,18 @@ function Heatmap(props: HeatmapProps) {
     const googleMapObject = useGoogleMapObject();
     const [heatmap] = createResource(() => googleMapObject, createHeatmapLayer);
 
+    createEffect(() => {
+        const heatmapObject: google.maps.visualization.HeatmapLayer | undefined = heatmap();
+        if (heatmapObject !== undefined) {
+            updateHeatmap(heatmapObject, props.heatmapPoints);
+        }
+    });
+
     return (
         <>
             {heatmap.loading && <> Loading... </>}
             {heatmap.error && <> Error! </>}
-            {heatmap() && updateHeatmap(heatmap(), props.heatmapPoints)}
+            {heatmap()}
         </>
     );
 }
