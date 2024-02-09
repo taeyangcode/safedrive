@@ -4,14 +4,29 @@ export interface GoogleMapsInitializeOptions {
     mapOptions: google.maps.MapOptions;
 }
 
-export interface Coordinate {
-    lat: number;
-    lng: number;
-}
+export class HeatmapDataPoint {
+    latitude: number;
+    longitude: number;
+    weight?: number;
 
-export interface WeightedCoordinate {
-    coordinate: Coordinate;
-    weight: number;
-}
+    constructor(latitude: number, longitude: number, weight?: number) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.weight = weight;
+    }
 
-export type HeatmapPoint = Coordinate | WeightedCoordinate;
+    public toGoogleMapPoint(): google.maps.LatLng | google.maps.visualization.WeightedLocation {
+        const coordinate: google.maps.LatLng = new google.maps.LatLng(
+            this.latitude,
+            this.longitude,
+        );
+
+        if (this.weight === undefined) {
+            return coordinate;
+        }
+        return {
+            location: coordinate,
+            weight: this.weight,
+        };
+    }
+}

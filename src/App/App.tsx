@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import GoogleMap, { GoogleMapProps } from "../GoogleMap/GoogleMap";
 import Heatmap from "../Heatmap/Heatmap";
-import { HeatmapPoint } from "../types";
+import { HeatmapDataPoint } from "../types";
 
 function App() {
     const googleMapProperties: GoogleMapProps = {
@@ -20,12 +20,19 @@ function App() {
         elementStyles: "",
     };
 
-    const [heatmapPoints, _] = createSignal<HeatmapPoint[]>([
-        { lat: 37.77, lng: -122.42 },
-        { lat: 37.77, lng: -122.42 },
-        { lat: 37.77, lng: -122.42 },
-        { lat: 37.77, lng: -122.42 },
+    const [heatmapPoints, setHeatmapPoints] = createSignal<HeatmapDataPoint[]>([
+        new HeatmapDataPoint(37.77, -122.42),
     ]);
+
+    setInterval(() => {
+        setHeatmapPoints([
+            ...heatmapPoints(),
+            new HeatmapDataPoint(
+                heatmapPoints()[heatmapPoints().length - 1].latitude + 0.05,
+                -122.42,
+            ),
+        ]);
+    }, 2_000);
 
     return (
         <div class="w-screen h-screen">

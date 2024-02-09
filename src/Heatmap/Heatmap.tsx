@@ -1,5 +1,5 @@
 import { createResource } from "solid-js";
-import { HeatmapPoint } from "../types";
+import { HeatmapDataPoint } from "../types";
 import { useGoogleMapObject } from "../GoogleMap/GoogleMap";
 
 function createHeatmapLayer(
@@ -12,13 +12,13 @@ function createHeatmapLayer(
 
 function updateHeatmap(
     heatmap: google.maps.visualization.HeatmapLayer,
-    heatmapPoints: HeatmapPoint[],
+    heatmapPoints: HeatmapDataPoint[],
 ) {
-    heatmap.setData(heatmapPoints);
+    heatmap.setData(heatmapPoints.map((point: HeatmapDataPoint) => point.toGoogleMapPoint()));
 }
 
 export interface HeatmapProps {
-    heatmapPoints: HeatmapPoint[];
+    heatmapPoints: HeatmapDataPoint[];
 }
 
 function Heatmap(props: HeatmapProps) {
