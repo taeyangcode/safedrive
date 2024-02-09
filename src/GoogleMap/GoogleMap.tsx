@@ -1,6 +1,5 @@
-import { GoogleMapsInitializeOptions } from "../types";
 import { JSX, createContext, createResource, useContext } from "solid-js";
-import { initializeGoogleMaps } from "./helper";
+import { GoogleMapsInitializeOptions, initializeGoogleMaps } from "./helper";
 
 const GoogleMapObject = createContext<google.maps.Map>();
 
@@ -30,7 +29,9 @@ function GoogleMap(props: GoogleMapProps) {
             {googleMap.loading && <div> Loading... </div>}
             {googleMap.error && <div> Error! </div>}
             {googleMap() && (
-                <GoogleMapObject.Provider value={googleMap()}>{props.children}</GoogleMapObject.Provider>
+                <GoogleMapObject.Provider value={googleMap()}>
+                    {props.children}
+                </GoogleMapObject.Provider>
             )}
         </div>
     );

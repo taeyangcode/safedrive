@@ -1,6 +1,32 @@
 import { createEffect, createResource } from "solid-js";
-import { HeatmapDataPoint } from "../types";
 import { useGoogleMapObject } from "../GoogleMap/GoogleMap";
+
+export class HeatmapDataPoint {
+    latitude: number;
+    longitude: number;
+    weight?: number;
+
+    constructor(latitude: number, longitude: number, weight?: number) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.weight = weight;
+    }
+
+    public toGoogleMapPoint(): google.maps.LatLng | google.maps.visualization.WeightedLocation {
+        const coordinate: google.maps.LatLng = new google.maps.LatLng(
+            this.latitude,
+            this.longitude,
+        );
+
+        if (this.weight === undefined) {
+            return coordinate;
+        }
+        return {
+            location: coordinate,
+            weight: this.weight,
+        };
+    }
+}
 
 function createHeatmapLayer(
     googleMapObject: google.maps.Map,

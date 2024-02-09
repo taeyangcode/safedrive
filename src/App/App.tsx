@@ -1,7 +1,6 @@
 import { createSignal } from "solid-js";
 import GoogleMap, { GoogleMapProps } from "../GoogleMap/GoogleMap";
-import Heatmap from "../Heatmap/Heatmap";
-import { HeatmapDataPoint } from "../types";
+import Heatmap, { HeatmapDataPoint } from "../Heatmap/Heatmap";
 
 const googleMapProperties: GoogleMapProps = {
     initializerOptions: {
@@ -14,6 +13,9 @@ const googleMapProperties: GoogleMapProps = {
             },
             zoom: 15,
         },
+
+        onBoundsChanged: (bounds?: google.maps.LatLngBounds) =>
+            console.log(bounds?.getCenter().lat()),
     },
     elementClasses: "w-screen h-screen",
     elementStyles: "",
