@@ -1,40 +1,49 @@
-import { Loader } from "@googlemaps/js-api-loader";
+import { Library, Loader } from "@googlemaps/js-api-loader";
 
-export interface GoogleMapsInitializeOptions {
+export interface GoogleMapInitializeOptions {
     elementIdName: string;
     apiKey: string;
     mapOptions: google.maps.MapOptions;
+    libraries: Library[];
 
-    onBoundsChanged?: (arg0?: google.maps.LatLngBounds) => void;
+    eventData?: {
+        onBoundsChanged?: (arg0?: google.maps.LatLngBounds) => void;
+    };
 }
 
-export async function initializeGoogleMaps(
-    options: GoogleMapsInitializeOptions,
+function addEventCallback<T>(
+    googleMap: google.maps.Map,
+    event: string,
+    callback: (arg0?: T) => void,
+) {
+    googleMap.addListener(event, callback);
+}
+
+export async function initializeGoogleMap(
+    options: GoogleMapInitializeOptions,
 ): Promise<google.maps.Map> {
-    const googleMapsLoader: Loader = new Loader({
-        apiKey: options.apiKey,
+    const { elementIdName, apiKey, mapOptions, libraries, eventData } = options;
+
+    const googleMapLoader: Loader = new Loader({
+        apiKey: apiKey,
         version: "weekly",
-        libraries: ["places", "visualization"],
+        libraries: libraries,
     });
 
-    const { Map } = await googleMapsLoader.importLibrary("maps");
+    const { Map } = await googleMapLoader.importLibrary("maps");
     const googleMapObject: google.maps.Map = new Map(
-        document.getElementById(options.elementIdName) as HTMLElement,
-        options.mapOptions,
+        document.getElementById(elementIdName) as HTMLElement,
+        mapOptions,
     );
 
-    const onBoundsChangedCallback = options.onBoundsChanged;
-    if (onBoundsChangedCallback) {
-        function addEventCallback<T>(
-            googleMap: google.maps.Map,
-            event: string,
-            callback: (arg0?: T) => void,
-        ) {
-            googleMap.addListener(event, callback);
-        }
+    if (!eventData) {
+        return googleMapObject;
+    }
 
-        addEventCallback(googleMapObject, "bounds_changed", () =>
-            onBoundsChangedCallback(googleMapObject.getBounds()),
+    const { onBoundsChanged } = eventData;
+    if (onBoundsChanged) {
+        addEventCallback<google.maps.LatLngBounds>(googleMapObject, "bounds_changed", () =>
+            onBoundsChanged(googleMapObject.getBounds()),
         );
     }
 

@@ -13,9 +13,9 @@ const googleMapProperties: GoogleMapProps = {
             },
             zoom: 15,
         },
+        libraries: ["places", "visualization"],
 
-        onBoundsChanged: (bounds?: google.maps.LatLngBounds) =>
-            console.log(bounds?.getCenter().lat()),
+        eventData: {},
     },
     elementClasses: "w-screen h-screen",
     elementStyles: "",

@@ -1,5 +1,5 @@
 import { JSX, createContext, createResource, useContext } from "solid-js";
-import { GoogleMapsInitializeOptions, initializeGoogleMaps } from "./helper";
+import { GoogleMapInitializeOptions, initializeGoogleMap } from "./helper";
 
 const GoogleMapObject = createContext<google.maps.Map>();
 
@@ -12,7 +12,7 @@ export function useGoogleMapObject(): google.maps.Map {
 }
 
 export interface GoogleMapProps {
-    initializerOptions: GoogleMapsInitializeOptions;
+    initializerOptions: GoogleMapInitializeOptions;
     elementClasses: string;
     elementStyles: string;
 
@@ -22,7 +22,7 @@ export interface GoogleMapProps {
 function GoogleMap(props: GoogleMapProps) {
     const { initializerOptions, elementClasses, elementStyles } = props;
 
-    const [googleMap] = createResource(() => ({ ...initializerOptions }), initializeGoogleMaps);
+    const [googleMap] = createResource(() => ({ ...initializerOptions }), initializeGoogleMap);
 
     return (
         <div id={initializerOptions.elementIdName} class={elementClasses} style={elementStyles}>
