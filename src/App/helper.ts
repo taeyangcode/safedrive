@@ -1,4 +1,3 @@
-import { GoogleMapProps } from "../GoogleMap/GoogleMap";
 import { HeatmapDataPoint } from "../Heatmap/Heatmap";
 
 export type CoordinateColumnName = "Start_Lat" | "Start_Lng" | "End_Lat" | "End_Lng" | "Severity";
@@ -20,28 +19,10 @@ export interface Accident {
     ];
 }
 
-export const googleMapProperties: GoogleMapProps = {
-    initializerOptions: {
-        elementIdName: "map",
-        apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-        mapOptions: {
-            center: {
-                lat: 33.88,
-                lng: -118.41,
-            },
-            zoom: 15,
-        },
-        libraries: ["places", "visualization"],
-
-        eventData: {
-            onBoundsChanged: handleBoundsChanged,
-        },
-    },
-    elementClasses: "w-screen h-screen",
-    elementStyles: "",
-};
-
-async function handleBoundsChanged(bounds?: google.maps.LatLngBounds) {
+export async function handleBoundsChanged(
+    setHeatmapPoints: (arg0: HeatmapDataPoint[]) => void,
+    bounds?: google.maps.LatLngBounds,
+) {
     if (!bounds) {
         return;
     }
@@ -62,8 +43,19 @@ async function handleBoundsChanged(bounds?: google.maps.LatLngBounds) {
     const accidentDataResponse: Response = await fetch(url);
     const accidentData: Accident = await accidentDataResponse.json();
 
-    // return accidentData.columns
-    //     .map((accident: DataframeColumn<CoordinateColumnName>) => new HeatmapDataPoint(
+    const accidentPoints: HeatmapDataPoint[] = [];
+    const [latitude, longitude, severity] = [
+        accidentData.columns[0].values,
+        accidentData.columns[1].values,
+        accidentData.columns[4].values,
+    ];
+    for (let rowIndex = 0; rowIndex < latitude.length; ++rowIndex) {
+        accidentPoints.push(
+            new HeatmapDataPoint(latitude[rowIndex], longitude[rowIndex], severity[rowIndex]),
+        );
+    }
+    setHeatmapPoints(accidentPoints);
+}
 
 let previousBounds: google.maps.LatLngBounds | undefined = undefined;
 
@@ -88,8 +80,6 @@ const isSignficantChange = (newBounds?: google.maps.LatLngBounds): boolean => {
     const longitudeDifference: number = Math.abs(
         newBounds.getNorthEast().lng() - previousBounds.getNorthEast().lng(),
     );
-
-    console.log(latitudeDifference * milesPerLatitude, longitudeDifference * milesPerLongitude);
 
     return (
         latitudeDifference * milesPerLatitude >= significantLatitudeDifference ||
