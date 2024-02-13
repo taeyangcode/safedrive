@@ -43,16 +43,17 @@ export async function handleBoundsChanged(
     const accidentDataResponse: Response = await fetch(url);
     const accidentData: Accident = await accidentDataResponse.json();
 
-    const accidentPoints: HeatmapDataPoint[] = [];
+    const accidentPoints: google.maps.visualization.WeightedLocation[] = [];
     const [latitude, longitude, severity] = [
         accidentData.columns[0].values,
         accidentData.columns[1].values,
         accidentData.columns[4].values,
     ];
     for (let rowIndex = 0; rowIndex < latitude.length; ++rowIndex) {
-        accidentPoints.push(
-            new HeatmapDataPoint(latitude[rowIndex], longitude[rowIndex], severity[rowIndex]),
-        );
+        accidentPoints.push({
+            location: new google.maps.LatLng(latitude[rowIndex], longitude[rowIndex]),
+            weight: severity[rowIndex],
+        });
     }
     setHeatmapPoints(accidentPoints);
 }
